@@ -1,0 +1,18 @@
+[
+  { "id": 1, "name": "Torta Cuadrada de Chocolate", "description": "Deliciosa torta de chocolate con ganache. Personalizable.", "price": 45000, "image": "android.resource://com.example.pasteleria/drawable/cuadrada_chocolate", "category": "Tortas" },
+  { "id": 2, "name": "Torta Circular de Vainilla", "description": "Torta clásica de vainilla, esponjosa y ligera.", "price": 40000, "image": "android.resource://com.example.pasteleria/drawable/circular_vainilla", "category": "Tortas" },
+  { "id": 3, "name": "Torta Cuadrada de Frutas", "description": "Torta decorada con frutas frescas.", "price": 50000, "image": "android.resource://com.example.pasteleria/drawable/cuadrada_frutas", "category": "Tortas" },
+  { "id": 4, "name": "Torta Cuadrada de Manjar", "description": "Relleno cremoso de manjar.", "price": 42000, "image": "android.resource://com.example.pasteleria/drawable/cuadrada_manjar", "category": "Tortas" },
+  { "id": 5, "name": "Mousse de Chocolate", "description": "", "price": 5000, "image": "android.resource://com.example.pasteleria/drawable/mousse_chocolate", "category": "Postres" },
+  { "id": 6, "name": "Tiramisu Clasico", "description": "", "price": 5500, "image": "android.resource://com.example.pasteleria/drawable/tiramisu_clasico", "category": "Postres" },
+  { "id": 7, "name": "Torta Sin Azucar de Naranja", "description": "", "price": 48000, "image": "android.resource://com.example.pasteleria/drawable/sinazucar_naranja", "category": "Sin Azúcar" },
+  { "id": 8, "name": "Cheesecake Sin Azucar", "description": "", "price": 47000, "image": "android.resource://com.example.pasteleria/drawable/cheesecake_sinazucar", "category": "Sin Azúcar" },
+  { "id": 9, "name": "Empanada de Manzana", "description": "", "price": 3000, "image": "android.resource://com.example.pasteleria/drawable/empanada_manzana", "category": "Bocadillos" },
+  { "id": 10, "name": "Tarta de Santiago", "description": "", "price": 6000, "image": "android.resource://com.example.pasteleria/drawable/santiago", "category": "Tartas" },
+  { "id": 11, "name": "Brownie Sin Gluten", "description": "", "price": 4000, "image": "android.resource://com.example.pasteleria/drawable/brownie_singluten", "category": "Sin Gluten" },
+  { "id": 12, "name": "Pan sin Gluten", "description": "", "price": 3500, "image": "android.resource://com.example.pasteleria/drawable/pan_singluten", "category": "Sin Gluten" },
+  { "id": 13, "name": "Torta Vegana de Chocolate", "description": "", "price": 50000, "image": "android.resource://com.example.pasteleria/drawable/vegana_chocolate", "category": "Vegano" },
+  { "id": 14, "name": "Galletas Veganas de Avena", "description": "", "price": 4500, "image": "android.resource://com.example.pasteleria/drawable/galletas_vegana_avena", "category": "Vegano" },
+  { "id": 15, "name": "Torta Especial de Cumpleaños", "description": "", "price": 55000, "image": "android.resource://com.example.pasteleria/drawable/especial_cumpleanos", "category": "Ocasiones Especiales" },
+  { "id": 16, "name": "Torta Especial de Boda", "description": "", "price": 60000, "image": "android.resource://com.example.pasteleria/drawable/especial_boda", "category": "Ocasiones Especiales" }
+]

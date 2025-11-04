@@ -1,0 +1,10 @@
+package com.example.pasteleria.data.models
+
+data class Product(
+    val id: Int,
+    val name: String,
+    val description: String = "",
+    val price: Double,
+    val imageUrl: String? = null,
+    val category: String? = null
+)
