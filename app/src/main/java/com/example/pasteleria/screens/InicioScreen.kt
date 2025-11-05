@@ -59,8 +59,16 @@ fun InicioScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Button(onClick = { navController.navigate(Screen.Home.route) }) {
-                Text("Ver productos")
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Button(onClick = { navController.navigate(Screen.Home.route) }) {
+                    Text("Ver productos")
+                }
+                Button(onClick = { navController.navigate("contacto") }) {
+                    Text("Contacto")
+                }
             }
         }
     }

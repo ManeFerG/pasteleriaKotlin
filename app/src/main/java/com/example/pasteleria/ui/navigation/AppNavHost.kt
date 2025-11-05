@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.pasteleria.screens.ContactoScreen
 import com.example.pasteleria.screens.InicioScreen
 import com.example.pasteleria.screens.RegistroScreen
 import com.example.pasteleria.ui.screens.CartScreen
@@ -57,6 +58,10 @@ fun AppNavHost(navController: androidx.navigation.NavHostController? = null) {
 
         composable(Screen.Register.route) {
             RegistroScreen(navController = nc)
+        }
+
+        composable("contacto") {
+            ContactoScreen(navController = nc)
         }
     }
 }
