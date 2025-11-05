@@ -2,10 +2,16 @@ package com.example.pasteleria.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+val PastelGreenLight = Color(0xFFA8D8B9)
+val PastelGreen = Color(0xFF81C784)
+val PastelGreenDark = Color(0xFF5A9C74)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val PastelGreenLight_dark = Color(0xFFC8E6C9)
+val PastelGreen_dark = Color(0xFFA8D8B9)
+val PastelGreenDark_dark = Color(0xFF81C784)
+
+val White = Color(0xFFFFFFFF)
+val Black = Color(0xFF000000)
+val Red = Color(0xFFFF0000)
+val Surface_light = Color(0xFFF0F5F0)
+val Surface_dark = Color(0xFF121212)

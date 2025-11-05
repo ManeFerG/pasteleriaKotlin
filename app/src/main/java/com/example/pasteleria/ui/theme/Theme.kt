@@ -16,22 +16,32 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = PastelGreen_dark,
+    onPrimary = Black,
+    secondary = PastelGreenLight_dark,
+    tertiary = PastelGreenDark_dark,
+    background = Surface_dark,
+    surface = Surface_dark,
+    error = Red,
+    onError = White
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = PastelGreen,
+    onPrimary = White,
+    secondary = PastelGreenLight,
+    tertiary = PastelGreenDark,
+    background = Surface_light,
+    surface = Surface_light,
+    error = Red,
+    onError = White
 )
 
 @Composable
 fun PasteleriaTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -39,6 +49,7 @@ fun PasteleriaTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
+
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }

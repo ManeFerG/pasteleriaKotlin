@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.pasteleria.screens.InicioScreen
 import com.example.pasteleria.ui.screens.CartScreen
 import com.example.pasteleria.ui.screens.HomeScreen
 import com.example.pasteleria.ui.screens.LoginScreen
@@ -20,13 +21,15 @@ fun AppNavHost(navController: androidx.navigation.NavHostController? = null) {
     val productsVm: ProductsViewModel = viewModel()
     val cartVm: CartViewModel = viewModel()
 
-    NavHost(navController = nc, startDestination = Screen.Home.route) {
+    NavHost(navController = nc, startDestination = Screen.Inicio.route) {
+        composable(Screen.Inicio.route) {
+            InicioScreen(navController = nc)
+        }
         composable(Screen.Home.route) {
             HomeScreen(
                 productsVm = productsVm,
                 onProductClick = { id -> nc.navigate(Screen.ProductDetail.createRoute(id)) },
-                onCartClick = { nc.navigate(Screen.Cart.route) },
-                onLoginClick = { nc.navigate(Screen.Login.route) }
+                navController = nc
             )
         }
 

@@ -12,10 +12,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.pasteleria.R
+import com.example.pasteleria.ui.navigation.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Navbar(navController: NavController) {
+fun Navbar(
+    navController: NavController,
+    navigationIcon: @Composable () -> Unit = {}
+) {
     TopAppBar(
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -32,9 +36,10 @@ fun Navbar(navController: NavController) {
                 )
             }
         },
+        navigationIcon = navigationIcon,
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.error,
-            titleContentColor = MaterialTheme.colorScheme.onError
+            containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary
         ),
         actions = {
             var expanded by remember { mutableStateOf(false) }
@@ -44,7 +49,7 @@ fun Navbar(navController: NavController) {
                     modifier = Modifier
                         .clickable { expanded = true }
                         .padding(8.dp),
-                    color = MaterialTheme.colorScheme.onError,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     fontWeight = FontWeight.SemiBold
                 )
                 DropdownMenu(
@@ -54,49 +59,28 @@ fun Navbar(navController: NavController) {
                     DropdownMenuItem(
                         text = { Text("Inicio") },
                         onClick = {
-                            navController.navigate("inicio")
-                            expanded = false
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text("Contacto") },
-                        onClick = {
-                            navController.navigate("contacto")
+                            navController.navigate(Screen.Inicio.route)
                             expanded = false
                         }
                     )
                     DropdownMenuItem(
                         text = { Text("Productos") },
                         onClick = {
-                            navController.navigate("productos")
-                            expanded = false
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text("Detalles") },
-                        onClick = {
-                            navController.navigate("detalle")
-                            expanded = false
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text("Login") },
-                        onClick = {
-                            navController.navigate("login")
-                            expanded = false
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text("Registro") },
-                        onClick = {
-                            navController.navigate("registro")
+                            navController.navigate(Screen.Home.route)
                             expanded = false
                         }
                     )
                     DropdownMenuItem(
                         text = { Text("Carro") },
                         onClick = {
-                            navController.navigate("carro")
+                            navController.navigate(Screen.Cart.route)
+                            expanded = false
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Registro") },
+                        onClick = {
+                            navController.navigate(Screen.Register.route)
                             expanded = false
                         }
                     )

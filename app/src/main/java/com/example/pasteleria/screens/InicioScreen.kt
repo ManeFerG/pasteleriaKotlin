@@ -15,6 +15,7 @@ import com.example.pasteleria.components.Navbar
 import com.example.pasteleria.R
 import com.example.pasteleria.components.h1Style
 import com.example.pasteleria.components.pStyle
+import com.example.pasteleria.ui.navigation.Screen
 
 @Composable
 fun InicioScreen(
@@ -55,6 +56,12 @@ fun InicioScreen(
                         "una experiencia de compra moderna y accesible para sus clientes.",
                 style = pStyle
             )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(onClick = { navController.navigate(Screen.Home.route) }) {
+                Text("Ver productos")
+            }
         }
     }
 }
