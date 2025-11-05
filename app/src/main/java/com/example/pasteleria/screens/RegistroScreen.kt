@@ -100,14 +100,6 @@ fun RegistroScreen(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.pastel1),
-                contentDescription = "Logo Pastelería",
-                modifier = Modifier
-                    .size(150.dp)
-                    .padding(top = 32.dp, bottom = 16.dp)
-            )
-
             Text(
                 text = "Registro de Usuario",
                 style = h1Style,

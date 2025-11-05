@@ -17,10 +17,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.pasteleria.ui.navigation.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(onBack: () -> Unit, onRegistered: () -> Unit) {
+fun LoginScreen(navController: NavController, onRegistered: () -> Unit) {
     var email by remember { mutableStateOf("") }
     var pass by remember { mutableStateOf("") }
 
@@ -44,7 +46,9 @@ fun LoginScreen(onBack: () -> Unit, onRegistered: () -> Unit) {
             Spacer(Modifier.height(12.dp))
             Button(onClick = onRegistered, modifier = Modifier.fillMaxWidth()) { Text("Entrar (demo)") }
             Spacer(Modifier.height(8.dp))
-            Button(onClick = onBack, modifier = Modifier.fillMaxWidth()) { Text("Volver") }
+            Button(onClick = { navController.navigate(Screen.Register.route) }, modifier = Modifier.fillMaxWidth()) { Text("Registrar Usuario") }
+            Spacer(Modifier.height(8.dp))
+            Button(onClick = { navController.popBackStack() }, modifier = Modifier.fillMaxWidth()) { Text("Volver") }
         }
     }
 }

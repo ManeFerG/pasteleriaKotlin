@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.pasteleria.screens.InicioScreen
+import com.example.pasteleria.screens.RegistroScreen
 import com.example.pasteleria.ui.screens.CartScreen
 import com.example.pasteleria.ui.screens.HomeScreen
 import com.example.pasteleria.ui.screens.LoginScreen
@@ -51,7 +52,11 @@ fun AppNavHost(navController: androidx.navigation.NavHostController? = null) {
         }
 
         composable(Screen.Login.route) {
-            LoginScreen(onBack = { nc.popBackStack() }, onRegistered = { nc.navigate(Screen.Home.route) })
+            LoginScreen(navController = nc, onRegistered = { nc.navigate(Screen.Home.route) })
+        }
+
+        composable(Screen.Register.route) {
+            RegistroScreen(navController = nc)
         }
     }
 }

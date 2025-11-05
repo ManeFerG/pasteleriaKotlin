@@ -80,9 +80,9 @@ fun Navbar(
                         }
                     )
                     DropdownMenuItem(
-                        text = { Text("Registro") },
+                        text = { Text("Login") },
                         onClick = {
-                            navController.navigate(Screen.Register.route)
+                            navController.navigate(Screen.Login.route)
                             expanded = false
                         }
                     )
