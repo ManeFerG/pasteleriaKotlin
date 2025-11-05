@@ -47,7 +47,7 @@ fun AppNavHost(navController: androidx.navigation.NavHostController? = null) {
         }
 
         composable(Screen.Cart.route) {
-            CartScreen(cartVm = cartVm, onBack = { nc.popBackStack() })
+            CartScreen(cartVm = cartVm, navController = nc)
         }
 
         composable(Screen.Login.route) {

@@ -18,7 +18,8 @@ import com.example.pasteleria.ui.navigation.Screen
 @Composable
 fun Navbar(
     navController: NavController,
-    navigationIcon: @Composable () -> Unit = {}
+    navigationIcon: @Composable () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {}
 ) {
     TopAppBar(
         title = {
@@ -42,6 +43,7 @@ fun Navbar(
             titleContentColor = MaterialTheme.colorScheme.onPrimary
         ),
         actions = {
+            actions()
             var expanded by remember { mutableStateOf(false) }
             Box {
                 Text(
