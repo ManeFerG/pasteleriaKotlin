@@ -1,5 +1,9 @@
 package com.example.pasteleria.screens
 
+import android.graphics.Bitmap
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -12,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -21,9 +26,12 @@ import com.example.pasteleria.components.Navbar
 import com.example.pasteleria.components.h1Style
 import com.example.pasteleria.components.pStyle
 import com.example.pasteleria.model.Usuario
+import com.example.pasteleria.network.RetrofitClient
 import com.example.pasteleria.utils.calcularBeneficios
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
+import org.json.JSONObject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,26 +48,67 @@ fun RegistroScreen(
     var edad by remember { mutableStateOf("") }
     var mensaje by remember { mutableStateOf("") }
     var mostrarDialogo by remember { mutableStateOf(false) }
+    var imageBitmap by remember { mutableStateOf<Bitmap?>(null) }
+    
+    val scope = rememberCoroutineScope()
+
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) {
+        imageBitmap = it
+    }
 
     fun handleRegister() {
-        if (!nombre.matches(Regex("^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$"))) {
-            mensaje = "El nombre solo puede contener letras y espacios."
-            mostrarDialogo = true
-            return
-        }
-        if (password != confirmPassword) {
-            mensaje = "Las contraseñas no coinciden."
-            mostrarDialogo = true
-            return
-        }
-        if (nombre.isBlank() || correo.isBlank() || direccion.isBlank() || password.isBlank()) {
+        // Validar campos obligatorios
+        if (nombre.isBlank() || correo.isBlank() || direccion.isBlank() || password.isBlank() || edad.isBlank()) {
             mensaje = "Todos los campos obligatorios deben completarse."
             mostrarDialogo = true
             return
         }
 
+        // Validar nombre (solo letras y espacios)
+        if (!nombre.matches(Regex("^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$"))) {
+            mensaje = "El nombre solo puede contener letras y espacios."
+            mostrarDialogo = true
+            return
+        }
+
+        // Validar formato de correo electrónico
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(correo).matches()) {
+            mensaje = "El formato del correo electrónico no es válido."
+            mostrarDialogo = true
+            return
+        }
+
+        // Validar longitud de la contraseña
+        if (password.length < 6) {
+            mensaje = "La contraseña debe tener al menos 6 caracteres."
+            mostrarDialogo = true
+            return
+        }
+
+        // Validar que las contraseñas coincidan
+        if (password != confirmPassword) {
+            mensaje = "Las contraseñas no coinciden."
+            mostrarDialogo = true
+            return
+        }
+
+        // Validar teléfono (si se ingresa, debe ser numérico)
+        if (telefono.isNotBlank() && !telefono.matches(Regex("^\\d+$"))) {
+            mensaje = "El teléfono debe contener solo números."
+            mostrarDialogo = true
+            return
+        }
+
+        // Validar edad (debe ser un número válido)
+        val edadInt = edad.toIntOrNull()
+        if (edadInt == null || edadInt <= 0 || edadInt > 120) {
+            mensaje = "Ingrese una edad válida."
+            mostrarDialogo = true
+            return
+        }
+
         val codigo = ""
-        val (descuento, beneficios) = calcularBeneficios(edad.toIntOrNull() ?: 0, correo, codigo)
+        val (descuento, beneficios) = calcularBeneficios(edadInt, correo, codigo)
 
         val usuario = Usuario(
             nombre = nombre,
@@ -67,30 +116,61 @@ fun RegistroScreen(
             password = password,
             telefono = if (telefono.isBlank()) null else telefono,
             direccion = direccion,
-            edad = edad.toIntOrNull() ?: 0,
+            edad = edadInt,
             descuento = descuento,
             beneficios = beneficios,
             fechaRegistro = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(Date())
         )
 
-        mensaje = buildString {
-            appendLine("Registro exitoso: ${usuario.nombre}")
-            appendLine("Descuento aplicado: ${usuario.descuento}%")
-            if (usuario.beneficios.isNotEmpty()) {
-                appendLine("Beneficios:")
-                usuario.beneficios.forEach { appendLine("- $it") }
-            } else appendLine("Sin beneficios adicionales.")
+        scope.launch {
+            try {
+                val response = RetrofitClient.instance.registrarUsuario(usuario)
+                if (response.isSuccessful) {
+                    mensaje = buildString {
+                        appendLine("✅ Registro exitoso: ${usuario.nombre}")
+                        appendLine("Descuento aplicado: ${usuario.descuento}%")
+                        if (usuario.beneficios.isNotEmpty()) {
+                            appendLine("Beneficios:")
+                            usuario.beneficios.forEach { appendLine("- $it") }
+                        } else appendLine("Sin beneficios adicionales.")
+                        if (imageBitmap != null) {
+                            appendLine("Foto de perfil capturada.")
+                        }
+                    }
+                    
+                    nombre = ""
+                    correo = ""
+                    password = ""
+                    confirmPassword = ""
+                    telefono = ""
+                    direccion = ""
+                    edad = ""
+                    imageBitmap = null
+                } else {
+                    // Leemos el cuerpo del error para saber qué pasó en el servidor
+                    val errorBody = response.errorBody()?.string()
+                    val errorMsg = try {
+                        // Intentamos parsear si viene en JSON { "message": "..." }
+                        if (!errorBody.isNullOrBlank()) {
+                            JSONObject(errorBody).optString("message", errorBody)
+                        } else {
+                            "Error desconocido"
+                        }
+                    } catch (e: Exception) {
+                        errorBody ?: "Error desconocido"
+                    }
+
+                    if (response.code() == 409) {
+                        mensaje = "❌ Error: El correo electrónico ya está registrado."
+                    } else {
+                        mensaje = "Error en el servidor (${response.code()}): $errorMsg"
+                    }
+                }
+            } catch (e: Exception) {
+                mensaje = "Error de conexión: ${e.message}"
+            }
+            mostrarDialogo = true
         }
-
-        mostrarDialogo = true
-
-        nombre = ""
-        correo = ""
-        password = ""
-        confirmPassword = ""
-        telefono = ""
-        direccion = ""
-        edad = ""
     }
 
     Scaffold(
@@ -138,6 +218,22 @@ fun RegistroScreen(
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    if (imageBitmap != null) {
+                        Image(
+                            bitmap = imageBitmap!!.asImageBitmap(),
+                            contentDescription = "Foto de perfil",
+                            modifier = Modifier
+                                .size(100.dp)
+                                .padding(bottom = 8.dp)
+                        )
+                    } else {
+                        Button(onClick = { launcher.launch() }) {
+                            Text("Tomar foto de perfil")
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
                     OutlinedTextField(
                         value = nombre,
                         onValueChange = { nombre = it },

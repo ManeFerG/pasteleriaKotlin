@@ -1,4 +1,4 @@
-package com.example.pasteleria.ui.screens
+package com.example.pasteleria.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -33,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.pasteleria.components.Navbar
-import com.example.pasteleria.data.models.Product
+import com.example.pasteleria.data.Product
 import com.example.pasteleria.viewmodel.ProductsViewModel
 import java.util.Locale
 

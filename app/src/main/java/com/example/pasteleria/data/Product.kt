@@ -1,4 +1,4 @@
-package com.example.pasteleria.data.models
+package com.example.pasteleria.data
 
 data class Product(
     val id: Int,

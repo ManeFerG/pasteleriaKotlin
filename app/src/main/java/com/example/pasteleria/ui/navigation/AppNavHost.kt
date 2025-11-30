@@ -10,10 +10,10 @@ import androidx.navigation.navArgument
 import com.example.pasteleria.screens.ContactoScreen
 import com.example.pasteleria.screens.InicioScreen
 import com.example.pasteleria.screens.RegistroScreen
-import com.example.pasteleria.ui.screens.CartScreen
-import com.example.pasteleria.ui.screens.HomeScreen
-import com.example.pasteleria.ui.screens.LoginScreen
-import com.example.pasteleria.ui.screens.ProductDetailScreen
+import com.example.pasteleria.screens.CartScreen
+import com.example.pasteleria.screens.HomeScreen
+import com.example.pasteleria.screens.LoginScreen
+import com.example.pasteleria.screens.ProductDetailScreen
 import com.example.pasteleria.viewmodel.CartViewModel
 import com.example.pasteleria.viewmodel.ProductsViewModel
 
@@ -54,7 +54,7 @@ fun AppNavHost(navController: androidx.navigation.NavHostController? = null) {
         }
 
         composable(Screen.Login.route) {
-            LoginScreen(navController = nc, onRegistered = { nc.navigate(Screen.Home.route) })
+            LoginScreen(navController = nc)
         }
 
         composable(Screen.Register.route) {

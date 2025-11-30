@@ -1,7 +1,7 @@
 package com.example.pasteleria.data
 
 import android.content.Context
-import com.example.pasteleria.data.models.Product
+import com.example.pasteleria.data.Product
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray

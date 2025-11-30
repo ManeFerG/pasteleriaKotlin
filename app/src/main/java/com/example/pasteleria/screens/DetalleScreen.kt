@@ -1,20 +1,21 @@
 package com.example.pasteleria.screens
 
-import com.example.pasteleria.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.pasteleria.R
 import com.example.pasteleria.components.Navbar
 import com.example.pasteleria.components.h1Style
-import com.example.pasteleria.components.pStyle
 import com.example.pasteleria.model.ProductoDetalle
 import java.text.NumberFormat
 import java.util.*
@@ -40,56 +41,64 @@ fun DetalleScreen(navController: NavController, modifier: Modifier = Modifier) {
         ProductoDetalle("Torta Especial de Boda", 60000, "Elegante torta de varios pisos para bodas, diseñada a medida.", R.drawable.especial_boda)
     )
 
-    Column(modifier = modifier.fillMaxSize()) {
-        Navbar(navController)
-
-        Column(
-            modifier = Modifier
+    Scaffold(
+        topBar = { Navbar(navController) }
+    ) { padding ->
+        LazyColumn(
+            modifier = modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp)
-                .verticalScroll(rememberScrollState()),
+                .padding(padding)
+                .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo_pasteleria),
-                contentDescription = "Logo Pastelería",
-                modifier = Modifier
-                    .size(200.dp)
-                    .padding(vertical = 16.dp)
-            )
+            item {
+                Image(
+                    painter = painterResource(id = R.drawable.logo_pasteleria),
+                    contentDescription = "Logo Pastelería",
+                    modifier = Modifier
+                        .size(180.dp)
+                        .padding(vertical = 16.dp)
+                )
+                Text(
+                    text = "Catálogo Detallado",
+                    style = h1Style,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+            }
 
-            Text(text = "DETALLES DE PRODUCTOS", style = h1Style)
-            Spacer(modifier = Modifier.height(16.dp))
-
-            productos.forEach { producto ->
+            items(productos) { producto ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp),
-                    elevation = CardDefaults.cardElevation(6.dp)
+                    elevation = CardDefaults.cardElevation(4.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(16.dp)
-                    ) {
+                    Column {
                         Image(
                             painter = painterResource(id = producto.imagen),
                             contentDescription = producto.nombre,
+                            contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(180.dp)
+                                .height(200.dp)
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = producto.nombre,
-                            style = pStyle.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
-                        )
-                        Text(
-                            text = NumberFormat.getCurrencyInstance(Locale("es", "CL")).format(producto.precio),
-                            style = pStyle.copy(color = MaterialTheme.colorScheme.secondary)
-                        )
-                        Spacer(modifier = Modifier.height(6.dp))
-                        Text(text = producto.descripcion, style = pStyle)
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(
+                                text = producto.nombre,
+                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text(
+                                text = NumberFormat.getCurrencyInstance(Locale("es", "CL")).format(producto.precio),
+                                style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.primary)
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = producto.descripcion,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
                     }
                 }
             }
