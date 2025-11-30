@@ -8,7 +8,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
@@ -32,16 +31,13 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(cartVm: CartViewModel, navController: NavController) {
-    // Observamos la lista de items
     val itemsState = cartVm.items.collectAsState()
     val items = itemsState.value
     
-    // Calculamos el total directamente desde la lista observada para asegurar sincronización inmediata
     val total = remember(items) {
         items.sumOf { it.product.price * it.qty }
     }
     
-    // Estado para controlar el diálogo de pago exitoso
     var mostrarDialogoPago by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
 
@@ -114,7 +110,6 @@ fun CartScreen(cartVm: CartViewModel, navController: NavController) {
                                     .padding(12.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                // Imagen del producto
                                 AsyncImage(
                                     model = item.product.imageUrl,
                                     contentDescription = item.product.name,
@@ -126,7 +121,6 @@ fun CartScreen(cartVm: CartViewModel, navController: NavController) {
 
                                 Spacer(modifier = Modifier.width(16.dp))
 
-                                // Información
                                 Column(modifier = Modifier.weight(1f)) {
                                     Text(
                                         text = item.product.name,
@@ -143,7 +137,6 @@ fun CartScreen(cartVm: CartViewModel, navController: NavController) {
 
                                 Spacer(modifier = Modifier.width(8.dp))
 
-                                // Controles de Cantidad
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier
@@ -175,7 +168,6 @@ fun CartScreen(cartVm: CartViewModel, navController: NavController) {
                                     }
                                 }
                                 
-                                // Botón Eliminar
                                 IconButton(
                                     onClick = { cartVm.remove(item.product.id) }
                                 ) {
@@ -186,7 +178,6 @@ fun CartScreen(cartVm: CartViewModel, navController: NavController) {
                     }
                 }
                 
-                // Sección de Resumen y Botones fija abajo
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
@@ -253,17 +244,13 @@ fun CartScreen(cartVm: CartViewModel, navController: NavController) {
             }
         }
 
-        // Diálogo de Pago Exitoso
         if (mostrarDialogoPago) {
             AlertDialog(
                 onDismissRequest = { mostrarDialogoPago = false },
+                // Usamos ShoppingCart como icono genérico de éxito si CheckCircle no está disponible, o nada.
+                // Para asegurar que funcione, usamos un texto o icono seguro.
                 icon = { 
-                    Icon(
-                        Icons.Default.CheckCircle, 
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(48.dp)
-                    ) 
+                    Text("🎉", style = MaterialTheme.typography.displayMedium)
                 },
                 title = { 
                     Text(

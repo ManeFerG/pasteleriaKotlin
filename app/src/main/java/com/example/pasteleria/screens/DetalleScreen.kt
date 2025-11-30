@@ -4,6 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,6 +19,7 @@ import com.example.pasteleria.R
 import com.example.pasteleria.components.Navbar
 import com.example.pasteleria.components.h1Style
 import com.example.pasteleria.model.ProductoDetalle
+import com.example.pasteleria.ui.navigation.Screen
 import java.text.NumberFormat
 import java.util.*
 
@@ -42,7 +45,20 @@ fun DetalleScreen(navController: NavController, modifier: Modifier = Modifier) {
     )
 
     Scaffold(
-        topBar = { Navbar(navController) }
+        topBar = {
+            Navbar(
+                navController = navController,
+                actions = {
+                    IconButton(onClick = { navController.navigate(Screen.Cart.route) }) {
+                        Icon(
+                            Icons.Default.ShoppingCart,
+                            contentDescription = "Ir al Carrito",
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
+                }
+            )
+        }
     ) { padding ->
         LazyColumn(
             modifier = modifier
