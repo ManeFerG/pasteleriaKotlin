@@ -5,7 +5,7 @@ import com.example.pasteleria.data.Product
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-data class CartItem(val product: Product, var qty: Int = 1)
+data class CartItem(val product: Product, val qty: Int = 1)
 
 class CartViewModel : ViewModel() {
     private val _items = MutableStateFlow<List<CartItem>>(emptyList())
@@ -13,10 +13,32 @@ class CartViewModel : ViewModel() {
 
     fun add(product: Product) {
         val current = _items.value.toMutableList()
-        val existing = current.find { it.product.id == product.id }
-        if (existing != null) existing.qty += 1
-        else current.add(CartItem(product, 1))
+        val index = current.indexOfFirst { it.product.id == product.id }
+        
+        if (index != -1) {
+            // Reemplazar el elemento con una copia actualizada
+            val existing = current[index]
+            current[index] = existing.copy(qty = existing.qty + 1)
+        } else {
+            current.add(CartItem(product, 1))
+        }
         _items.value = current
+    }
+
+    fun decrease(product: Product) {
+        val current = _items.value.toMutableList()
+        val index = current.indexOfFirst { it.product.id == product.id }
+        
+        if (index != -1) {
+            val existing = current[index]
+            if (existing.qty > 1) {
+                // Reemplazar el elemento con una copia actualizada
+                current[index] = existing.copy(qty = existing.qty - 1)
+                _items.value = current
+            } else {
+                remove(product.id)
+            }
+        }
     }
 
     fun remove(productId: Int) {

@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
@@ -31,8 +32,14 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(cartVm: CartViewModel, navController: NavController) {
-    val items = cartVm.items.collectAsState()
-    val total = cartVm.total()
+    // Observamos la lista de items
+    val itemsState = cartVm.items.collectAsState()
+    val items = itemsState.value
+    
+    // Calculamos el total directamente desde la lista observada para asegurar sincronización inmediata
+    val total = remember(items) {
+        items.sumOf { it.product.price * it.qty }
+    }
     
     // Estado para controlar el diálogo de pago exitoso
     var mostrarDialogoPago by remember { mutableStateOf(false) }
@@ -66,7 +73,7 @@ fun CartScreen(cartVm: CartViewModel, navController: NavController) {
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)
             )
 
-            if (items.value.isEmpty()) {
+            if (items.isEmpty()) {
                 Box(
                     modifier = Modifier
                         .weight(1f)
@@ -95,7 +102,7 @@ fun CartScreen(cartVm: CartViewModel, navController: NavController) {
                         .padding(horizontal = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    items(items.value) { item ->
+                    items(items) { item ->
                         Card(
                             elevation = CardDefaults.cardElevation(2.dp),
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -134,17 +141,45 @@ fun CartScreen(cartVm: CartViewModel, navController: NavController) {
                                     )
                                 }
 
-                                // Cantidad
-                                Box(
+                                Spacer(modifier = Modifier.width(8.dp))
+
+                                // Controles de Cantidad
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier
                                         .background(MaterialTheme.colorScheme.secondaryContainer, RoundedCornerShape(8.dp))
-                                        .padding(horizontal = 12.dp, vertical = 6.dp)
                                 ) {
+                                    IconButton(
+                                        onClick = { cartVm.decrease(item.product) },
+                                        modifier = Modifier.size(32.dp)
+                                    ) {
+                                        Text(
+                                            text = "-",
+                                            style = MaterialTheme.typography.titleLarge,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                    
                                     Text(
-                                        text = "x${item.qty}",
+                                        text = "${item.qty}",
                                         style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
-                                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                        modifier = Modifier.padding(horizontal = 4.dp)
                                     )
+
+                                    IconButton(
+                                        onClick = { cartVm.add(item.product) },
+                                        modifier = Modifier.size(32.dp)
+                                    ) {
+                                        Icon(Icons.Default.Add, contentDescription = "Aumentar", modifier = Modifier.size(16.dp))
+                                    }
+                                }
+                                
+                                // Botón Eliminar
+                                IconButton(
+                                    onClick = { cartVm.remove(item.product.id) }
+                                ) {
+                                    Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = MaterialTheme.colorScheme.error)
                                 }
                             }
                         }
@@ -199,9 +234,8 @@ fun CartScreen(cartVm: CartViewModel, navController: NavController) {
                             Button(
                                 onClick = { 
                                     mostrarDialogoPago = true
-                                    // Simulamos proceso y limpiamos el carrito después de un momento o al cerrar el dialogo
                                     scope.launch {
-                                        delay(500) // pequeña pausa para realismo
+                                        delay(1500) 
                                         cartVm.clear()
                                     }
                                 },
@@ -249,7 +283,6 @@ fun CartScreen(cartVm: CartViewModel, navController: NavController) {
                     Button(
                         onClick = { 
                             mostrarDialogoPago = false
-                            // Opcional: Navegar al inicio después del pago
                             navController.navigate("inicio") {
                                 popUpTo("inicio") { inclusive = true }
                             }

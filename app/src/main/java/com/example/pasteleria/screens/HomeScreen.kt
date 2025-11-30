@@ -34,6 +34,7 @@ import coil.compose.AsyncImage
 import com.example.pasteleria.components.Navbar
 import com.example.pasteleria.data.Product
 import com.example.pasteleria.viewmodel.ProductsViewModel
+import com.example.pasteleria.ui.navigation.Screen
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,6 +57,15 @@ fun HomeScreen(
                         Icon(
                             Icons.Default.ArrowBack, 
                             contentDescription = "Volver",
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { navController.navigate(Screen.Cart.route) }) {
+                        Icon(
+                            Icons.Default.ShoppingCart,
+                            contentDescription = "Ir al Carrito",
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
