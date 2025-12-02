@@ -6,6 +6,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -16,12 +18,21 @@ import com.example.pasteleria.R
 import com.example.pasteleria.components.h1Style
 import com.example.pasteleria.components.pStyle
 import com.example.pasteleria.ui.navigation.Screen
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.pasteleria.viewmodel.WeatherViewModel
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CardDefaults
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun InicioScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
+    val weatherViewModel: WeatherViewModel = viewModel()
+    val weatherState by weatherViewModel.uiState.collectAsState()
     Column(modifier = modifier.fillMaxSize()) {
         Navbar(navController)
 
@@ -59,6 +70,80 @@ fun InicioScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
+                when {
+                    weatherState.isLoading -> {
+                        CircularProgressIndicator()
+                    }
+
+                    weatherState.error != null -> {
+                        Text(
+                            text = weatherState.error ?: "Error",
+                            color = MaterialTheme.colorScheme.error,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    weatherState.temperature != null &&
+                            weatherState.locationName != null &&
+                            weatherState.icon != null -> {
+
+                        Card(
+                            modifier = Modifier
+                                .widthIn(max = 420.dp)
+                                .fillMaxWidth(0.9f),
+                            shape = RoundedCornerShape(24.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color(0xFFD8F3DC),
+                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                            ),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                // icono
+                                Text(
+                                    text = weatherState.icon!!,
+                                    fontSize = 32.sp,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center
+                                )
+
+                                Spacer(modifier = Modifier.height(4.dp))
+
+                                // temperatura
+                                Text(
+                                    text = "${String.format("%.1f", weatherState.temperature)} °C",
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center
+                                )
+
+                                Spacer(modifier = Modifier.height(4.dp))
+
+                                // ciudad
+                                Text(
+                                    text = weatherState.locationName!!,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center
+                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                Text(
+                                    text = "Un día ideal para disfrutar algo dulce.",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        }
+            Spacer(modifier = Modifier.height(24.dp))
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
@@ -71,5 +156,4 @@ fun InicioScreen(
                 }
             }
         }
-    }
-}
+    }}}}
