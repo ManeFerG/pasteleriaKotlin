@@ -19,10 +19,10 @@ interface ApiService {
     suspend fun login(@Body loginData: Map<String, String>): Response<Usuario>
 }
 
-// Singleton para Retrofit
 object RetrofitClient {
 
-    private const val BASE_URL = "http://192.168.1.23:8080/"
+    private const val BASE_URL = "http://10.0.2.2:8080"
+    // Valentina local "http://192.168.1.23:8080/"
 
     private val okHttpClient = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
