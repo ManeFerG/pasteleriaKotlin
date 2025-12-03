@@ -1,5 +1,6 @@
 package com.example.pasteleria.screens
 
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,9 +18,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.example.pasteleria.R
 import com.example.pasteleria.components.Navbar
@@ -32,6 +35,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import org.json.JSONObject
+import android.Manifest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,11 +53,25 @@ fun RegistroScreen(
     var mensaje by remember { mutableStateOf("") }
     var mostrarDialogo by remember { mutableStateOf(false) }
     var imageBitmap by remember { mutableStateOf<Bitmap?>(null) }
-    
-    val scope = rememberCoroutineScope()
 
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) {
-        imageBitmap = it
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicturePreview()
+    ) { bitmap ->
+        imageBitmap = bitmap
+    }
+
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            cameraLauncher.launch()
+        } else {
+            mensaje = "Se requiere permiso de cámara para tomar la foto."
+            mostrarDialogo = true
+        }
     }
 
     fun handleRegister() {
@@ -227,9 +245,23 @@ fun RegistroScreen(
                                 .padding(bottom = 8.dp)
                         )
                     } else {
-                        Button(onClick = { launcher.launch() }) {
+                        Button(
+                            onClick = {
+                                val hasPermission = ContextCompat.checkSelfPermission(
+                                    context,
+                                    Manifest.permission.CAMERA
+                                ) == PackageManager.PERMISSION_GRANTED
+
+                                if (hasPermission) {
+                                    cameraLauncher.launch()
+                                } else {
+                                    cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                                }
+                            }
+                        ) {
                             Text("Tomar foto de perfil")
                         }
+
                     }
 
                     Spacer(modifier = Modifier.height(8.dp))
