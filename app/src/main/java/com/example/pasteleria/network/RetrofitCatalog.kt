@@ -6,7 +6,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitCatalog {
 
-    private const val BASE_URL = "http://10.0.2.2:8080/"
+    const val BASE_API    = "https://ms-catalog-service-production.up.railway.app/api/"
+    const val BASE_IMAGES = "https://ms-catalog-service-production.up.railway.app"
+
+    private const val BASE_URL = BASE_API
+
+
 
     val api: ProductoApiService by lazy {
         Retrofit.Builder()

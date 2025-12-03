@@ -12,30 +12,34 @@ import java.util.concurrent.TimeUnit
 
 // Interfaz de la API
 interface ApiService {
-    @POST("/usuarios/registrar")
-    suspend fun registrarUsuario(@Body usuario: Usuario): Response<ResponseBody>
 
-    @POST("/usuarios/login")
-    suspend fun login(@Body loginData: Map<String, String>): Response<Usuario>
+    @POST("usuarios/registrar")
+    suspend fun registrarUsuario(
+        @Body usuario: Usuario
+    ): Response<ResponseBody>
+
+    @POST("usuarios/login")
+    suspend fun login(
+        @Body loginData: Map<String, String>
+    ): Response<Usuario>
 }
 
 object RetrofitClient {
+        private const val BASE_URL =
+            "https://pasteleriabackend-production.up.railway.app"
 
-    private const val BASE_URL = "http://10.0.2.2:8083/"
-    // Valentina local "http://192.168.1.23:8080/"
-
-    private val okHttpClient = OkHttpClient.Builder()
-        .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(30, TimeUnit.SECONDS)
-        .writeTimeout(30, TimeUnit.SECONDS)
-        .build()
-
-    val instance: ApiService by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+        private val okHttpClient = OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
             .build()
-            .create(ApiService::class.java)
+
+        val instance: ApiService by lazy {
+            Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(ApiService::class.java)
+        }
     }
-}

@@ -17,6 +17,7 @@ import com.example.pasteleria.components.Navbar
 import com.example.pasteleria.components.h1Style
 import com.example.pasteleria.components.pStyle
 import com.example.pasteleria.data.Product
+import com.example.pasteleria.data.urlImagenCompleta    // ✔ CORRECTO
 import com.example.pasteleria.viewmodel.ProductsViewModel
 import java.text.NumberFormat
 import java.util.*
@@ -113,14 +114,11 @@ private fun ProductCard(
                 style = pStyle
             )
 
-            AsyncImage(
-                model = producto.imageUrl,
-                contentDescription = producto.name,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp),
-                contentScale = ContentScale.Crop
+            Text(
+                text = producto.urlImagenCompleta(),
+                style = pStyle
             )
+
 
             Spacer(modifier = Modifier.height(8.dp))
 
