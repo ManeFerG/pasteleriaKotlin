@@ -1,47 +1,40 @@
 package com.example.pasteleria.data
 
-import android.content.Context
-import com.example.pasteleria.data.Product
+import android.util.Log
+import com.example.pasteleria.model.ProductoRemote
+import com.example.pasteleria.network.RetrofitCatalog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.json.JSONArray
 
-class Repository(private val context: Context? = null) {
+private const val IMAGE_BASE_URL = "http://10.0.2.2:8080"
 
-    private val sampleProducts = listOf(
-        Product(1, "Marraqueta de dulce", "Deliciosa marraqueta con dulce", 1200.0, null, "Pan"),
-        Product(2, "Torta de vainilla", "Torta mediana para 6 personas", 4500.0, null, "Tortas"),
-        Product(3, "Panettone", "Pan dulce tradicional", 3500.0, null, "Dulces")
-    )
+class Repository {
 
     suspend fun getProducts(): List<Product> = withContext(Dispatchers.IO) {
-        if (context != null) {
-            try {
-                val stream = context.assets.open("products.json")
-                val text = stream.bufferedReader().use { it.readText() }
-                val arr = JSONArray(text)
-                val list = mutableListOf<Product>()
-                for (i in 0 until arr.length()) {
-                    val obj = arr.getJSONObject(i)
-                    list.add(
-                        Product(
-                            id = obj.optInt("id", i + 1),
-                            name = obj.optString("name"),
-                            description = obj.optString("description"),
-                            price = obj.optDouble("price", 0.0),
-                            imageUrl = obj.optString("image", null),
-                            category = obj.optString("category", null)
-                        )
-                    )
-                }
-                return@withContext list
-            } catch (e: Exception) {
-                sampleProducts
+        val remotos: List<ProductoRemote> = RetrofitCatalog.api.getProductos()
+
+        Log.d("REPO", "Cantidad remota: ${remotos.size}")
+
+        remotos.map { r ->
+            val fullUrl = r.imagenUrl?.let { path ->
+                // si viene "/images/..." o "images/...", lo normalizamos
+                val cleanPath = path.removePrefix("/")
+                "$IMAGE_BASE_URL/$cleanPath"
             }
-        } else {
-            sampleProducts
+
+            Log.d("IMG_URL", "Producto ${r.id}: $fullUrl")
+
+            Product(
+                id = r.id.toInt(),
+                name = r.nombreProducto,
+                description = r.descripcionProducto,
+                price = r.precioProducto,
+                imageUrl = fullUrl,
+                category = r.categoriaId.toString()
+            )
         }
     }
 
-    suspend fun getProductById(id: Int): Product? = getProducts().find { it.id == id }
+    suspend fun getProductById(id: Int): Product? =
+        getProducts().find { it.id == id }
 }
